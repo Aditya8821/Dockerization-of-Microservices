@@ -1,0 +1,35 @@
+#=============For dockerizing the microservice1====================
+
+- create an ec2 instance
+
+- git clone https://github.com/adityaofficial88/Microservice1
+- docker build -t api1-image -f Dockerfile.api1 .
+- docker run -d -p 5001:5001 --name api2-container api2-image
+
+#===========For pushing the image into AWS ECR(Elastic Container Registry)====================
+
+- sudo apt-get update
+- sudo apt-get install -y awscli
+- aws --version   #check if it is done 
+- Now got to aws IAM->users->your_username->
+  - Add these 2 policies
+       - AmazonEC2ContainerRegistryFullAccess
+       - AmazonElasticContainerRegistryPublicFullAccess
+
+  - Go to security credentials section
+      - Delete the old access keys
+      - Create the new access keys(choose CLI as the usecase while creating)
+      - Now you have both "Access Key Id" and "Secret Access Key", copy them somewhere 
+- aws configure
+  - paste Access Key Id 
+  - Secret Access Key
+  - us-east-1 #Enter the region where you are working on
+  - json
+
+- Create a new Repo in ECR(Elastic Container Registry) with name aditya_ecr_repo
+
+# Reference for these following commands is from ECR pushing commands itself
+- aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 267092042432.dkr.ecr.us-east-1.amazonaws.com
+- docker tag api1-image:latest 267092042432.dkr.ecr.us-east-1.amazonaws.com/aditya_ecr_repo:latest 
+- docker push 267092042432.dkr.ecr.us-east-1.amazonaws.com/aditya_ecr_repo:latest
+
